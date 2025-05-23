@@ -1,5 +1,11 @@
 function App() {
-	return <></>;
+	return (
+		<>
+			<Header />
+			{/* <Main /> */}
+			{/* <Footer /> */}
+		</>
+	);
 }
 
 export default App;
