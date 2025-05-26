@@ -1,7 +1,7 @@
-import { Order } from './components/Order/Order';
-import Footer from './views/Footer/Footer';
-import Header from './views/Header/Header';
-import Main from './views/Main/Main';
+import Footer from '@views/Footer/Footer';
+import Header from '@views/Header/Header';
+import Main from '@views/Main/Main';
+import Order from '@views/Order/Order';
 
 function App() {
 	return (
@@ -9,7 +9,6 @@ function App() {
 			<Header />
 			<Main />
 			<Footer />
-
 			<Order />
 		</>
 	);
