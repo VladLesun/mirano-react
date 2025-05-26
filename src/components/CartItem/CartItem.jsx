@@ -10,7 +10,7 @@ export const CartItem = ({ img, title, price }) => {
 					type='number'
 					max='99'
 					min='0'
-					value='1'
+					defaultValue={1}
 				/>
 				<button className='cart__counter-btn'>+</button>
 			</div>

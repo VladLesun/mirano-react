@@ -75,7 +75,7 @@ const Footer = () => (
 
 				<ul className='footer__developers-list'>
 					<li className='footer__developers-item'>
-						Designer:{' '}
+						Designer:&nbsp;
 						<a
 							className='footer__link'
 							href='https://t.me/Mrshamallowww'
@@ -85,7 +85,7 @@ const Footer = () => (
 						</a>
 					</li>
 					<li className='footer__developers-item'>
-						Developer:{' '}
+						Developer:&nbsp;
 						<a
 							className='footer__link'
 							href='https://t.me/VladLesun'
