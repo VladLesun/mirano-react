@@ -1,8 +1,12 @@
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Choices } from '../Choices/Choices';
 import './filter.scss';
 
 export const Filter = () => {
+	const dispatch = useDispatch();
+	const types = useSelector(state => state.products.types);
+	console.log('types: ', types);
 	const [openChoice, setOpenChoice] = useState(null);
 
 	const handleToggleChoice = str =>

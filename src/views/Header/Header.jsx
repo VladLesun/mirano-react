@@ -1,9 +1,10 @@
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { openCart } from '../../store/cart/cart.slice';
 import './header.scss';
 
 const Header = () => {
 	const dispatch = useDispatch();
+	const cartItems = useSelector(state => state.cart.items);
 
 	const handleOpenCart = () => dispatch(openCart());
 
@@ -41,7 +42,7 @@ const Header = () => {
 				/>
 
 				<button className='header__cart-button' onClick={handleOpenCart}>
-					0
+					{cartItems.length}
 				</button>
 			</div>
 		</header>

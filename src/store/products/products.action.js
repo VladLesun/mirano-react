@@ -3,9 +3,12 @@ import { API_URL } from '../API/api';
 
 export const fetchProducts = createAsyncThunk(
 	'products/fetchProducts',
-	async () => {
+	async params => {
 		try {
-			const res = await fetch(`${API_URL}/api/products`);
+			const queryString = new URLSearchParams(params).toString();
+			const res = await fetch(
+				`${API_URL}/api/products${queryString ? `?${queryString}` : ''}`
+			);
 
 			if (!res.ok) {
 				throw new Error('Не получилось получить данные о продуктах...');
