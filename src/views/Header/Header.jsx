@@ -1,6 +1,12 @@
+import { useDispatch } from 'react-redux';
+import { openCart } from '../../store/cart/cart.slice';
 import './header.scss';
 
 const Header = () => {
+	const dispatch = useDispatch();
+
+	const handleOpenCart = () => dispatch(openCart());
+
 	return (
 		<header className='header'>
 			<div className='container header__container'>
@@ -34,7 +40,9 @@ const Header = () => {
 					alt='Логотип Mirano Flower Boutique'
 				/>
 
-				<button className='header__cart-button'>0</button>
+				<button className='header__cart-button' onClick={handleOpenCart}>
+					0
+				</button>
 			</div>
 		</header>
 	);
