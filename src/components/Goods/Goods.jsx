@@ -10,27 +10,30 @@ export const Goods = () => {
 	);
 
 	let content = null;
-	let emptyContent = <p>Товары не найдены...</p>;
 
 	productsStatus === 'loading'
 		? (content = <p>Loading...</p>)
 		: productsStatus === 'succeeded'
 		? (content = (
 				<ul className='goods__list'>
-					{products.map(item => (
-						<li key={item.id} className='goods__item'>
-							<Card
-								id={item.id}
-								img={`${API_URL}${item.photoUrl}`}
-								title={item.name}
-								dateDelivery='сегодня в 14:00'
-								price={item.price}
-							/>
-						</li>
-					))}
+					{products.length === 0 ? (
+						<p>Товары не найдены...</p>
+					) : (
+						products.map(item => (
+							<li key={item.id} className='goods__item'>
+								<Card
+									id={item.id}
+									img={`${API_URL}${item.photoUrl}`}
+									title={item.name}
+									dateDelivery='сегодня в 14:00'
+									price={item.price}
+								/>
+							</li>
+						))
+					)}
 				</ul>
 		  ))
-		: productsStatus === 'failed'
+		: productsStatus === 'failed'	
 		? (content = <p>Error...</p>)
 		: '';
 
@@ -40,7 +43,7 @@ export const Goods = () => {
 				<div className='goods__box'>
 					<h2 className='goods__title'>Цветы</h2>
 
-					{products.length === 0 ? emptyContent : content}
+					{content}
 				</div>
 
 				<Cart />

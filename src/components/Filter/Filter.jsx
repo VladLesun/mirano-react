@@ -21,7 +21,7 @@ export const Filter = () => {
 	const debouncedFetchProducts = useRef(
 		debounce(filters => {
 			dispatch(fetchProducts(filters));
-		}, 500)
+		}, 300)
 	).current;
 
 	useEffect(() => {
@@ -48,7 +48,10 @@ export const Filter = () => {
 
 	const handleChangePrice = ({ target }) => {
 		const { name, value } = target;
-		const newFilter = { ...filters, [name]: value ? parseInt(value, 10) : '' };
+		const newFilter = {
+			...filters,
+			[name]: !isNaN(parseInt(value, 10)) ? value : '',
+		};
 		setFilters(newFilter);
 	};
 
