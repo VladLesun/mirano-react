@@ -5,11 +5,14 @@ import './card.scss';
 
 export const Card = ({ id, img, title, dateDelivery, price }) => {
 	const dispatch = useDispatch();
-	const [onElem, setOnElem] = useState(false);
+	const [buttonText, setButtonText] = useState(`${price}\u00A0₽`);
 
 	const handleAddToCart = () => {
 		dispatch(addToCart({ id, img, title, dateDelivery, price }));
 	};
+
+	const handleMouseEnter = () => setButtonText('в корзину');
+	const handleMouseLeave = () => setButtonText(`${price}\u00A0₽`);
 
 	return (
 		<article className='goods__card card'>
@@ -21,10 +24,10 @@ export const Card = ({ id, img, title, dateDelivery, price }) => {
 					<button
 						className='card__button'
 						onClick={handleAddToCart}
-						onMouseEnter={() => setOnElem(true)}
-						onMouseLeave={() => setOnElem(false)}
+						onMouseEnter={handleMouseEnter}
+						onMouseLeave={handleMouseLeave}
 					>
-						{onElem ? 'в корзину' : `${price} ₽`}
+						{buttonText}
 					</button>
 				</div>
 			</div>

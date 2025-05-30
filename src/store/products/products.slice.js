@@ -3,7 +3,6 @@ import { fetchProducts } from './products.action';
 
 const initialState = {
 	items: [],
-	types: ['bouquets', 'toys', 'postcards'],
 	isStatus: 'idle',
 	isError: null,
 };

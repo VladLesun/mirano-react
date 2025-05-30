@@ -1,24 +1,16 @@
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { API_URL } from '../../store/API/api';
-import { fetchProducts } from '../../store/products/products.action';
 import { Card } from '../Card/Card';
 import { Cart } from '../Cart/Cart';
 import './goods.scss';
 
 export const Goods = () => {
-	const dispatch = useDispatch();
 	const { items: products, isStatus: productsStatus } = useSelector(
 		state => state.products
 	);
 
-	useEffect(() => {
-		if (productsStatus === 'idle') {
-			dispatch(fetchProducts('bouquets'));
-		}
-	}, [dispatch, productsStatus]);
-
 	let content = null;
+	let emptyContent = <p>Товары не найдены...</p>;
 
 	productsStatus === 'loading'
 		? (content = <p>Loading...</p>)
@@ -48,7 +40,7 @@ export const Goods = () => {
 				<div className='goods__box'>
 					<h2 className='goods__title'>Цветы</h2>
 
-					{content}
+					{products.length === 0 ? emptyContent : content}
 				</div>
 
 				<Cart />

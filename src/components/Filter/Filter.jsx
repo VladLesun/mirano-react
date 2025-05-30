@@ -1,16 +1,56 @@
-import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { fetchProducts } from '../../store/products/products.action';
+import { debounce } from '../../utils/debounce';
+import { getValidFilters } from '../../utils/getValidFilters';
 import { Choices } from '../Choices/Choices';
 import './filter.scss';
 
 export const Filter = () => {
 	const dispatch = useDispatch();
-	const types = useSelector(state => state.products.types);
-	console.log('types: ', types);
 	const [openChoice, setOpenChoice] = useState(null);
+	const [filters, setFilters] = useState({
+		type: 'bouquets',
+		minPrice: '',
+		maxPrice: '',
+		category: '',
+	});
+
+	const prevFiltersRef = useRef(filters);
+
+	const debouncedFetchProducts = useRef(
+		debounce(filters => {
+			dispatch(fetchProducts(filters));
+		}, 500)
+	).current;
+
+	useEffect(() => {
+		const prevFilters = prevFiltersRef.current;
+		const validFilters = getValidFilters(filters);
+		if (prevFilters.type !== filters.type) {
+			dispatch(fetchProducts(validFilters));
+		} else {
+			debouncedFetchProducts(validFilters);
+		}
+
+		prevFiltersRef.current = filters;
+	}, [dispatch, debouncedFetchProducts, filters]);
 
 	const handleToggleChoice = str =>
 		setOpenChoice(openChoice === str ? null : str);
+
+	const handleChangeFilter = ({ target }) => {
+		const { value } = target;
+		const newFilter = { ...filters, type: value };
+		setFilters({ ...newFilter, minPrice: '', maxPrice: '' });
+		setOpenChoice(null);
+	};
+
+	const handleChangePrice = ({ target }) => {
+		const { name, value } = target;
+		const newFilter = { ...filters, [name]: value ? parseInt(value, 10) : '' };
+		setFilters(newFilter);
+	};
 
 	return (
 		<section className='filter'>
@@ -24,7 +64,8 @@ export const Filter = () => {
 							name='type'
 							value='bouquets'
 							id='flower'
-							defaultChecked
+							checked={filters.type === 'bouquets'}
+							onChange={handleChangeFilter}
 						/>
 						<label
 							className='filter__label filter__label_flower'
@@ -39,6 +80,8 @@ export const Filter = () => {
 							name='type'
 							value='toys'
 							id='toys'
+							checked={filters.type === 'toys'}
+							onChange={handleChangeFilter}
 						/>
 						<label className='filter__label filter__label_toys' htmlFor='toys'>
 							Игрушки
@@ -50,6 +93,8 @@ export const Filter = () => {
 							name='type'
 							value='postcards'
 							id='postcard'
+							checked={filters.type === 'postcards'}
+							onChange={handleChangeFilter}
 						/>
 						<label
 							className='filter__label filter__label_postcard'
@@ -71,12 +116,16 @@ export const Filter = () => {
 									type='text'
 									name='minPrice'
 									placeholder='от'
+									value={filters.minPrice}
+									onChange={handleChangePrice}
 								/>
 								<input
 									className='filter__input-price'
 									type='text'
 									name='maxPrice'
 									placeholder='до'
+									value={filters.maxPrice}
+									onChange={handleChangePrice}
 								/>
 							</fieldset>
 						</Choices>

@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { closeCart } from '../../store/cart/cart.slice';
 import { openOrder } from '../../store/order/order.slice';
@@ -8,12 +9,20 @@ export const Cart = () => {
 	const dispatch = useDispatch();
 	const { isOpen, items } = useSelector(state => state.cart);
 
+	const cartRef = useRef();
+
 	const handleCloseCart = () => dispatch(closeCart());
 	const handleOpenOrder = () => dispatch(openOrder());
 
+	useEffect(() => {
+		if (isOpen) {
+			cartRef.current.scrollIntoView({ behavior: 'smooth' });
+		}
+	}, [isOpen]);
+
 	if (isOpen) {
 		return (
-			<section className='cart'>
+			<section className='cart' ref={cartRef}>
 				<div className='cart__container'>
 					<div className='cart__header'>
 						<h3 className='cart__title'>Ваш заказ</h3>
