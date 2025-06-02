@@ -3,12 +3,12 @@ import { Goods } from '@components/Goods/Goods';
 import { Hero } from '@components/Hero/Hero';
 import { Subscribe } from '@components/Subscribe/Subscribe';
 
-const Main = () => {
+const Main = ({ title, setTitle }) => {
 	return (
 		<main>
 			<Hero />
-			<Filter />
-			<Goods />
+			<Filter setTitle={setTitle} />
+			<Goods title={title} />
 			<Subscribe />
 		</main>
 	);

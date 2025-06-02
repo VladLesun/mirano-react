@@ -4,7 +4,7 @@ import { Card } from '../Card/Card';
 import { Cart } from '../Cart/Cart';
 import './goods.scss';
 
-export const Goods = () => {
+export const Goods = ({ title }) => {
 	const { items: products, isStatus: productsStatus } = useSelector(
 		state => state.products
 	);
@@ -33,7 +33,7 @@ export const Goods = () => {
 					)}
 				</ul>
 		  ))
-		: productsStatus === 'failed'	
+		: productsStatus === 'failed'
 		? (content = <p>Error...</p>)
 		: '';
 
@@ -41,7 +41,7 @@ export const Goods = () => {
 		<section className='goods'>
 			<div className='container goods__container'>
 				<div className='goods__box'>
-					<h2 className='goods__title'>Цветы</h2>
+					<h2 className='goods__title'>{title}</h2>
 
 					{content}
 				</div>

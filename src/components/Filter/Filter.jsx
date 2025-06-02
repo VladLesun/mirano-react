@@ -1,20 +1,27 @@
 import { useEffect, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+	changeCategory,
+	changePrice,
+	changeType,
+} from '../../store/filter/filters.slice';
 import { fetchProducts } from '../../store/products/products.action';
 import { debounce } from '../../utils/debounce';
 import { getValidFilters } from '../../utils/getValidFilters';
 import { Choices } from '../Choices/Choices';
 import './filter.scss';
+import { FilterRadio } from './FilterRadio';
 
-export const Filter = () => {
+const filterTypes = [
+	{ value: 'bouquets', title: 'Цветы' },
+	{ value: 'toys', title: 'Игрушки' },
+	{ value: 'postcards', title: 'Открытки' },
+];
+
+export const Filter = ({ setTitle }) => {
 	const dispatch = useDispatch();
 	const [openChoice, setOpenChoice] = useState(null);
-	const [filters, setFilters] = useState({
-		type: 'bouquets',
-		minPrice: '',
-		maxPrice: '',
-		category: '',
-	});
+	const filters = useSelector(state => state.filters);
 
 	const prevFiltersRef = useRef(filters);
 
@@ -27,6 +34,7 @@ export const Filter = () => {
 	useEffect(() => {
 		const prevFilters = prevFiltersRef.current;
 		const validFilters = getValidFilters(filters);
+		setTitle(filterTypes.find(item => item.value === filters.type).title);
 		if (prevFilters.type !== filters.type) {
 			dispatch(fetchProducts(validFilters));
 		} else {
@@ -34,25 +42,27 @@ export const Filter = () => {
 		}
 
 		prevFiltersRef.current = filters;
-	}, [dispatch, debouncedFetchProducts, filters]);
+	}, [dispatch, debouncedFetchProducts, setTitle, filters]);
 
 	const handleToggleChoice = str =>
 		setOpenChoice(openChoice === str ? null : str);
 
 	const handleChangeFilter = ({ target }) => {
 		const { value } = target;
-		const newFilter = { ...filters, type: value };
-		setFilters({ ...newFilter, minPrice: '', maxPrice: '' });
-		setOpenChoice(null);
+		dispatch(changeType(value));
+		setOpenChoice(-1);
 	};
 
 	const handleChangePrice = ({ target }) => {
 		const { name, value } = target;
-		const newFilter = {
-			...filters,
-			[name]: !isNaN(parseInt(value, 10)) ? value : '',
-		};
-		setFilters(newFilter);
+		dispatch(changePrice({ name, value }));
+	};
+
+	const handleChangeTypes = ({ target }) => {
+		const { value } = target;
+		console.log('value: ', value);
+		dispatch(changeCategory(value));
+		setOpenChoice(-1);
 	};
 
 	return (
@@ -61,50 +71,16 @@ export const Filter = () => {
 			<div className='container'>
 				<form className='filter__form'>
 					<fieldset className='filter__group'>
-						<input
-							className='filter__radio'
-							type='radio'
-							name='type'
-							value='bouquets'
-							id='flower'
-							checked={filters.type === 'bouquets'}
-							onChange={handleChangeFilter}
-						/>
-						<label
-							className='filter__label filter__label_flower'
-							htmlFor='flower'
-						>
-							Цветы
-						</label>
-
-						<input
-							className='filter__radio'
-							type='radio'
-							name='type'
-							value='toys'
-							id='toys'
-							checked={filters.type === 'toys'}
-							onChange={handleChangeFilter}
-						/>
-						<label className='filter__label filter__label_toys' htmlFor='toys'>
-							Игрушки
-						</label>
-
-						<input
-							className='filter__radio'
-							type='radio'
-							name='type'
-							value='postcards'
-							id='postcard'
-							checked={filters.type === 'postcards'}
-							onChange={handleChangeFilter}
-						/>
-						<label
-							className='filter__label filter__label_postcard'
-							htmlFor='postcard'
-						>
-							Открытки
-						</label>
+						{filterTypes.map(item => {
+							return (
+								<FilterRadio
+									key={item.value}
+									data={item}
+									type={filters.type}
+									handleChangeFilter={handleChangeFilter}
+								/>
+							);
+						})}
 					</fieldset>
 
 					<fieldset className='filter__group filter__group_choices'>
@@ -133,39 +109,66 @@ export const Filter = () => {
 							</fieldset>
 						</Choices>
 
-						<Choices
-							buttonLabel='Тип товара'
-							isOpen={openChoice === 'type'}
-							onToggle={() => handleToggleChoice('type')}
-						>
-							<ul className='filter__type-list'>
-								<li className='filter__type-item'>
-									<button className='filter__type-button' type='button'>
-										Монобукеты
-									</button>
-								</li>
-								<li className='filter__type-item'>
-									<button className='filter__type-button' type='button'>
-										Авторские букеты
-									</button>
-								</li>
-								<li className='filter__type-item'>
-									<button className='filter__type-button' type='button'>
-										Цветы в коробке
-									</button>
-								</li>
-								<li className='filter__type-item'>
-									<button className='filter__type-button' type='button'>
-										Цветы в корзине
-									</button>
-								</li>
-								<li className='filter__type-item'>
-									<button className='filter__type-button' type='button'>
-										Букеты из сухоцветов
-									</button>
-								</li>
-							</ul>
-						</Choices>
+						{filters.type === 'bouquets' && (
+							<Choices
+								buttonLabel='Тип товара'
+								isOpen={openChoice === 'type'}
+								onToggle={() => handleToggleChoice('type')}
+							>
+								<ul className='filter__type-list'>
+									<li className='filter__type-item'>
+										<button
+											className='filter__type-button'
+											type='button'
+											value='Монобукеты'
+											onClick={handleChangeTypes}
+										>
+											Монобукеты
+										</button>
+									</li>
+									<li className='filter__type-item'>
+										<button
+											className='filter__type-button'
+											type='button'
+											value='Авторские букеты'
+											onClick={handleChangeTypes}
+										>
+											Авторские букеты
+										</button>
+									</li>
+									<li className='filter__type-item'>
+										<button
+											className='filter__type-button'
+											type='button'
+											value='Цветы в коробке'
+											onClick={handleChangeTypes}
+										>
+											Цветы в коробке
+										</button>
+									</li>
+									<li className='filter__type-item'>
+										<button
+											className='filter__type-button'
+											type='button'
+											value='Цветы в корзине'
+											onClick={handleChangeTypes}
+										>
+											Цветы в корзине
+										</button>
+									</li>
+									<li className='filter__type-item'>
+										<button
+											className='filter__type-button'
+											type='button'
+											value='Букеты из сухоцветов'
+											onClick={handleChangeTypes}
+										>
+											Букеты из сухоцветов
+										</button>
+									</li>
+								</ul>
+							</Choices>
+						)}
 					</fieldset>
 				</form>
 			</div>

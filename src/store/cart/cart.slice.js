@@ -1,8 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { registerCart } from './cart.action';
 
 const initialState = {
 	isOpen: false,
 	items: JSON.parse(localStorage.getItem('cartItems') || '[]'),
+	isStatus: 'idle',
+	accessKey: null,
+	isError: null,
 };
 
 const cartSlice = createSlice({
@@ -29,11 +33,22 @@ const cartSlice = createSlice({
 			localStorage.setItem('cartItems', JSON.stringify(state.items));
 		},
 	},
-	// extraReducers: builder => {
-	// 	builder.addCase().addCase().addCase();
-	// },
+	extraReducers: builder => {
+		builder
+			.addCase(registerCart.pending, state => {
+				state.isStatus = 'loading';
+			})
+			.addCase(registerCart.fulfilled, (state, action) => {
+				state.isStatus = 'succeeded';
+				state.accessKey = action.payload.accessKey;
+			})
+			.addCase(registerCart.rejected, (state, action) => {
+				state.isStatus = 'failed';
+				state.accessKey = '';
+				state.isError = action.error.message;
+			});
+	},
 });
-
 export const { openCart, closeCart, addToCart } = cartSlice.actions;
 
 export default cartSlice.reducer;

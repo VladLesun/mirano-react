@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { API_URL } from '../API/api';
+import { API_ENDPOINTS_PRODUCTS, API_URL } from '../API/api';
 
 export const fetchProducts = createAsyncThunk(
 	'products/fetchProducts',
@@ -7,7 +7,9 @@ export const fetchProducts = createAsyncThunk(
 		try {
 			const queryString = new URLSearchParams(params).toString();
 			const res = await fetch(
-				`${API_URL}/api/products${queryString ? `?${queryString}` : ''}`
+				`${API_URL}${API_ENDPOINTS_PRODUCTS}${
+					queryString ? `?${queryString}` : ''
+				}`
 			);
 
 			if (!res.ok) {
