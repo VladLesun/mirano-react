@@ -1,3 +1,4 @@
+import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { closeOrder } from '../../store/order/order.slice';
 import './order.scss';
@@ -7,9 +8,21 @@ const Order = () => {
 	const isOpenOrder = useSelector(state => state.order.isOpen);
 	const dispatch = useDispatch();
 
-	const handleCloseOrder = () => {
+	const handleCloseOrder = useCallback(() => {
 		dispatch(closeOrder());
-	};
+	}, [dispatch]);
+
+	useEffect(() => {
+		const handleEscape = e => {
+			if (e.key === 'Escape') handleCloseOrder();
+		};
+
+		if (isOpenOrder) {
+			document.addEventListener('keydown', handleEscape);
+		}
+
+		return () => document.removeEventListener('keydown', handleEscape);
+	}, [isOpenOrder, handleCloseOrder]);
 
 	if (!isOpenOrder) return null;
 
