@@ -10,6 +10,7 @@ export default defineConfig({
 			'@scss': path.resolve(__dirname, 'src/scss'),
 			'@views': path.resolve(__dirname, 'src/views'),
 			'@components': path.resolve(__dirname, 'src/components'),
+			'@store': path.resolve(__dirname, 'src/store'),
 		},
 	},
 });

@@ -4,7 +4,7 @@ import Main from '@views/Main/Main';
 import Order from '@views/Order/Order';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { registerCart } from './store/cart/cart.action';
+import { fetchCart, registerCart } from './store/cart/cart.action';
 
 function App() {
 	const dispatch = useDispatch();
@@ -12,13 +12,14 @@ function App() {
 
 	useEffect(() => {
 		(async () => {
-			dispatch(registerCart());
+			await dispatch(registerCart());
+			await dispatch(fetchCart());
 		})();
 	}, [dispatch]);
 
 	return (
 		<>
-			<Header />
+			<Header setTitle={setTitleProducts} />
 			<Main title={titleProducts} setTitle={setTitleProducts} />
 			<Footer />
 			<Order />

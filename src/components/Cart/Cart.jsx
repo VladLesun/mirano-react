@@ -14,6 +14,10 @@ export const Cart = () => {
 	const handleCloseCart = () => dispatch(closeCart());
 	const handleOpenOrder = () => dispatch(openOrder());
 
+	const totalPrice = items.reduce((acc, item) => {
+		return item.quantity * item.price + acc;
+	}, 0);
+
 	useEffect(() => {
 		if (isOpen) {
 			cartRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -67,7 +71,7 @@ export const Cart = () => {
 						<button className='cart__order-btn' onClick={handleOpenOrder}>
 							Оформить
 						</button>
-						<p className='cart__price cart__price_total'>0&nbsp;₽</p>
+						<p className='cart__price cart__price_total'>{totalPrice}&nbsp;₽</p>
 					</div>
 				</div>
 			</section>

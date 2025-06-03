@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import {
 	changeCategory,
 	changePrice,
 	changeType,
-} from '../../store/filter/filters.slice';
-import { fetchProducts } from '../../store/products/products.action';
+} from '@store/filter/filters.slice';
+import { fetchProducts } from '@store/products/products.action';
+import { useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { debounce } from '../../utils/debounce';
 import { getValidFilters } from '../../utils/getValidFilters';
 import { Choices } from '../Choices/Choices';
@@ -33,12 +33,15 @@ export const Filter = ({ setTitle }) => {
 
 	useEffect(() => {
 		const prevFilters = prevFiltersRef.current;
-		const validFilters = getValidFilters(filters);
-		setTitle(filterTypes.find(item => item.value === filters.type).title);
-		if (prevFilters.type !== filters.type) {
-			dispatch(fetchProducts(validFilters));
+		const validFilter = getValidFilters(filters);
+		if (!validFilter.type) {
+			return;
+		}
+		setTitle(filterTypes.find(item => item.value === validFilter.type).title);
+		if (prevFilters.type !== validFilter.type) {
+			dispatch(fetchProducts(validFilter));
 		} else {
-			debouncedFetchProducts(validFilters);
+			debouncedFetchProducts(validFilter);
 		}
 
 		prevFiltersRef.current = filters;
@@ -60,7 +63,6 @@ export const Filter = ({ setTitle }) => {
 
 	const handleChangeTypes = ({ target }) => {
 		const { value } = target;
-		console.log('value: ', value);
 		dispatch(changeCategory(value));
 		setOpenChoice(-1);
 	};
