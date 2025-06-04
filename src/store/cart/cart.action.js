@@ -61,27 +61,3 @@ export const addToCart = createAsyncThunk(
 		}
 	}
 );
-
-export const removeItemCart = createAsyncThunk(
-	'cart/removeItemCart',
-	async ({ productId }) => {
-		try {
-			const res = await fetch(`${API_URL}${API_ENDPOINTS_CART}/items`, {
-				method: 'DELETE',
-				credentials: 'include',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({ productId }),
-			});
-
-			if (!res.ok) {
-				throw new Error('Не удалось удалить товар из корзины...');
-			}
-
-			return await res.json();
-		} catch (error) {
-			console.error(error);
-		}
-	}
-);

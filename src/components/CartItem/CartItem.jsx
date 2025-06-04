@@ -1,40 +1,37 @@
 import { API_URL } from '@store/API/api';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { addToCart, removeItemCart } from '../../store/cart/cart.action';
+import { addToCart } from '../../store/cart/cart.action';
+import { debounce } from '../../utils/debounce';
+import { isNumber } from '../../utils/isNumber';
 // import { isNumber } from '../../utils/isNumber';
 
 export const CartItem = ({ photoUrl, name, price, id, quantity }) => {
-	const [isValue, setIsValue] = useState(quantity);
+	const [inputQuantity, setInputQuantity] = useState(quantity);
 	const dispatch = useDispatch();
 
-	// const handleChangeQuantityItem = ({ target }) => {
-	// 	const { value } = target;
-	// 	if (isNumber(value)) {
-	// 		setIsValue(parseInt(value));
-	// 		dispatch(addToCart({ productId: id, quantity: parseInt(value) }));
-	// 	}
-	// 	if (value === '') {
-	// 		setIsValue(1);
-	// 		dispatch(addToCart({ productId: id, quantity: 1 }));
-	// 	}
-	// };
+	const debounceInputChange = debounce(newQuantity => {
+		dispatch(addToCart({ productId: id, quantity: newQuantity }));
+	}, 500);
 
-	const handlePlusItem = () => {
-		const newValue = isValue + 1;
-		setIsValue(newValue);
-		dispatch(addToCart({ productId: id, quantity: newValue }));
+	const handleInputChange = e => {
+		const newQuantity = parseInt(e.target.value);
+		if (isNumber(newQuantity)) {
+			setInputQuantity(newQuantity);
+			debounceInputChange(newQuantity);
+		}
 	};
 
-	const handleMinusItem = () => {
-		const newValue = isValue - 1;
+	const handleIncrement = () => {
+		const newQuantity = inputQuantity + 1;
+		setInputQuantity(newQuantity);
+		dispatch(addToCart({ productId: id, quantity: newQuantity }));
+	};
 
-		if (newValue < 1) {
-			dispatch(removeItemCart({ productId: id }));
-		} else {
-			setIsValue(newValue);
-			dispatch(addToCart({ productId: id, quantity: newValue }));
-		}
+	const handleDecrement = () => {
+		const newQuantity = inputQuantity - 1;
+		setInputQuantity(newQuantity);
+		dispatch(addToCart({ productId: id, quantity: newQuantity }));
 	};
 
 	const totalPrice = price * quantity;
@@ -43,7 +40,7 @@ export const CartItem = ({ photoUrl, name, price, id, quantity }) => {
 			<img className='cart__img' src={`${API_URL}${photoUrl}`} alt={name} />
 			<h4 className='cart__item-title'>{name}</h4>
 			<div className='cart__counter'>
-				<button className='cart__counter-btn' onClick={handleMinusItem}>
+				<button className='cart__counter-btn' onClick={handleDecrement}>
 					-
 				</button>
 				<input
@@ -51,10 +48,10 @@ export const CartItem = ({ photoUrl, name, price, id, quantity }) => {
 					type='number'
 					max='99'
 					min='0'
-					value={isValue}
-					// onChange={handleChangeQuantityItem}
+					value={inputQuantity}
+					onChange={handleInputChange}
 				/>
-				<button className='cart__counter-btn' onClick={handlePlusItem}>
+				<button className='cart__counter-btn' onClick={handleIncrement}>
 					+
 				</button>
 			</div>

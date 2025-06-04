@@ -26,8 +26,13 @@ const filtersSlice = createSlice({
 		changeCategory(state, action) {
 			state.category = action.payload;
 		},
+		hiddenChoices(state) {
+			//! убираю при поиске товаров
+			state.type = null;
+		},
 	},
 });
 
-export const { changeType, changePrice, changeCategory } = filtersSlice.actions;
+export const { changeType, changePrice, changeCategory, hiddenChoices } =
+	filtersSlice.actions;
 export default filtersSlice.reducer;

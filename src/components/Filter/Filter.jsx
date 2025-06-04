@@ -85,93 +85,95 @@ export const Filter = ({ setTitle }) => {
 						})}
 					</fieldset>
 
-					<fieldset className='filter__group filter__group_choices'>
-						<Choices
-							buttonLabel='Цена'
-							isOpen={openChoice === 'price'}
-							onToggle={() => handleToggleChoice('price')}
-						>
-							<fieldset className='filter__price'>
-								<input
-									className='filter__input-price'
-									type='text'
-									name='minPrice'
-									placeholder='от'
-									value={filters.minPrice}
-									onChange={handleChangePrice}
-								/>
-								<input
-									className='filter__input-price'
-									type='text'
-									name='maxPrice'
-									placeholder='до'
-									value={filters.maxPrice}
-									onChange={handleChangePrice}
-								/>
-							</fieldset>
-						</Choices>
-
-						{filters.type === 'bouquets' && (
+					{filters.type && (
+						<fieldset className='filter__group filter__group_choices'>
 							<Choices
-								buttonLabel='Тип товара'
-								isOpen={openChoice === 'type'}
-								onToggle={() => handleToggleChoice('type')}
+								buttonLabel='Цена'
+								isOpen={openChoice === 'price'}
+								onToggle={() => handleToggleChoice('price')}
 							>
-								<ul className='filter__type-list'>
-									<li className='filter__type-item'>
-										<button
-											className='filter__type-button'
-											type='button'
-											value='Монобукеты'
-											onClick={handleChangeTypes}
-										>
-											Монобукеты
-										</button>
-									</li>
-									<li className='filter__type-item'>
-										<button
-											className='filter__type-button'
-											type='button'
-											value='Авторские букеты'
-											onClick={handleChangeTypes}
-										>
-											Авторские букеты
-										</button>
-									</li>
-									<li className='filter__type-item'>
-										<button
-											className='filter__type-button'
-											type='button'
-											value='Цветы в коробке'
-											onClick={handleChangeTypes}
-										>
-											Цветы в коробке
-										</button>
-									</li>
-									<li className='filter__type-item'>
-										<button
-											className='filter__type-button'
-											type='button'
-											value='Цветы в корзине'
-											onClick={handleChangeTypes}
-										>
-											Цветы в корзине
-										</button>
-									</li>
-									<li className='filter__type-item'>
-										<button
-											className='filter__type-button'
-											type='button'
-											value='Букеты из сухоцветов'
-											onClick={handleChangeTypes}
-										>
-											Букеты из сухоцветов
-										</button>
-									</li>
-								</ul>
+								<fieldset className='filter__price'>
+									<input
+										className='filter__input-price'
+										type='text'
+										name='minPrice'
+										placeholder='от'
+										value={filters.minPrice}
+										onChange={handleChangePrice}
+									/>
+									<input
+										className='filter__input-price'
+										type='text'
+										name='maxPrice'
+										placeholder='до'
+										value={filters.maxPrice}
+										onChange={handleChangePrice}
+									/>
+								</fieldset>
 							</Choices>
-						)}
-					</fieldset>
+
+							{filters.type === 'bouquets' && (
+								<Choices
+									buttonLabel='Тип товара'
+									isOpen={openChoice === 'type'}
+									onToggle={() => handleToggleChoice('type')}
+								>
+									<ul className='filter__type-list'>
+										<li className='filter__type-item'>
+											<button
+												className='filter__type-button'
+												type='button'
+												value='Монобукеты'
+												onClick={handleChangeTypes}
+											>
+												Монобукеты
+											</button>
+										</li>
+										<li className='filter__type-item'>
+											<button
+												className='filter__type-button'
+												type='button'
+												value='Авторские букеты'
+												onClick={handleChangeTypes}
+											>
+												Авторские букеты
+											</button>
+										</li>
+										<li className='filter__type-item'>
+											<button
+												className='filter__type-button'
+												type='button'
+												value='Цветы в коробке'
+												onClick={handleChangeTypes}
+											>
+												Цветы в коробке
+											</button>
+										</li>
+										<li className='filter__type-item'>
+											<button
+												className='filter__type-button'
+												type='button'
+												value='Цветы в корзине'
+												onClick={handleChangeTypes}
+											>
+												Цветы в корзине
+											</button>
+										</li>
+										<li className='filter__type-item'>
+											<button
+												className='filter__type-button'
+												type='button'
+												value='Букеты из сухоцветов'
+												onClick={handleChangeTypes}
+											>
+												Букеты из сухоцветов
+											</button>
+										</li>
+									</ul>
+								</Choices>
+							)}
+						</fieldset>
+					)}
 				</form>
 			</div>
 		</section>

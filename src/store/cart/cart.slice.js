@@ -1,10 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import {
-	addToCart,
-	fetchCart,
-	registerCart,
-	removeItemCart,
-} from './cart.action';
+import { addToCart, fetchCart, registerCart } from './cart.action';
 
 const initialState = {
 	isOpen: false,
@@ -54,22 +49,11 @@ const cartSlice = createSlice({
 				state.isStatus = 'loading';
 			})
 			.addCase(addToCart.fulfilled, (state, action) => {
+				console.log('action add to cart: ', action);
 				state.isStatus = 'succeeded';
 				state.items = action.payload;
 			})
 			.addCase(addToCart.rejected, (state, action) => {
-				state.isStatus = 'failed';
-				state.isError = action.error.message;
-			})
-			.addCase(removeItemCart.pending, state => {
-				state.isStatus = 'loading';
-			})
-			.addCase(removeItemCart.fulfilled, (state, action) => {
-				console.log('action: ', action);
-				state.isStatus = 'succeeded';
-				state.items = action.payload;
-			})
-			.addCase(removeItemCart.rejected, (state, action) => {
 				state.isStatus = 'failed';
 				state.isError = action.error.message;
 			});

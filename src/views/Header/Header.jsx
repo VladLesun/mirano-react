@@ -4,6 +4,7 @@ import { fetchProducts } from '@store/products/products.action';
 import { searchOpenProducts } from '@store/products/products.slice';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { hiddenChoices } from '../../store/filter/filters.slice';
 import './header.scss';
 
 const Header = ({ setTitle }) => {
@@ -17,6 +18,7 @@ const Header = ({ setTitle }) => {
 		dispatch(fetchProducts({ search: searchValue }));
 		dispatch(changeType(''));
 		dispatch(searchOpenProducts());
+		dispatch(hiddenChoices());
 		setTitle(`Результат поиска: ${searchValue}`);
 		setSearchValue('');
 	};
