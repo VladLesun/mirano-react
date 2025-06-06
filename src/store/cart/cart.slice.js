@@ -49,7 +49,6 @@ const cartSlice = createSlice({
 				state.isStatus = 'loading';
 			})
 			.addCase(addToCart.fulfilled, (state, action) => {
-				console.log('action add to cart: ', action);
 				state.isStatus = 'succeeded';
 				state.items = action.payload;
 			})

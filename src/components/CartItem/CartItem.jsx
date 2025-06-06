@@ -34,7 +34,6 @@ export const CartItem = ({ photoUrl, name, price, id, quantity }) => {
 		dispatch(addToCart({ productId: id, quantity: newQuantity }));
 	};
 
-	const totalPrice = price * quantity;
 	return (
 		<li className='cart__item'>
 			<img className='cart__img' src={`${API_URL}${photoUrl}`} alt={name} />
@@ -55,7 +54,7 @@ export const CartItem = ({ photoUrl, name, price, id, quantity }) => {
 					+
 				</button>
 			</div>
-			<p className='cart__price'>{totalPrice}&nbsp;₽</p>
+			<p className='cart__price'>{price * inputQuantity}&nbsp;₽</p>
 		</li>
 	);
 };
