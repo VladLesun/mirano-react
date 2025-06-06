@@ -5,7 +5,6 @@ const initialState = {
 	type: 'bouquets',
 	minPrice: '',
 	maxPrice: '',
-	category: '',
 };
 
 const filtersSlice = createSlice({

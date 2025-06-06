@@ -1,11 +1,9 @@
-import {
-	changeCategory,
-	changePrice,
-	changeType,
-} from '@store/filter/filters.slice';
+import { changePrice, changeType } from '@store/filter/filters.slice';
 import { fetchProducts } from '@store/products/products.action';
+import classNames from 'classnames';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { changeCategory } from '../../store/filter/filters.slice';
 import { debounce } from '../../utils/debounce';
 import { getValidFilters } from '../../utils/getValidFilters';
 import { Choices } from '../Choices/Choices';
@@ -20,8 +18,9 @@ const filterTypes = [
 
 export const Filter = ({ setTitle }) => {
 	const dispatch = useDispatch();
-	const [openChoice, setOpenChoice] = useState(null);
 	const filters = useSelector(state => state.filters);
+	const categories = useSelector(state => state.products.categories);
+	const [openChoice, setOpenChoice] = useState(null);
 
 	const prevFiltersRef = useRef(filters);
 
@@ -61,9 +60,8 @@ export const Filter = ({ setTitle }) => {
 		dispatch(changePrice({ name, value }));
 	};
 
-	const handleChangeTypes = ({ target }) => {
-		const { value } = target;
-		dispatch(changeCategory(value));
+	const handleChangeCategory = category => {
+		dispatch(changeCategory(category));
 		setOpenChoice(-1);
 	};
 
@@ -112,7 +110,7 @@ export const Filter = ({ setTitle }) => {
 								</fieldset>
 							</Choices>
 
-							{filters.type === 'bouquets' && (
+							{categories.length ? (
 								<Choices
 									buttonLabel='Тип товара'
 									isOpen={openChoice === 'type'}
@@ -121,57 +119,35 @@ export const Filter = ({ setTitle }) => {
 									<ul className='filter__type-list'>
 										<li className='filter__type-item'>
 											<button
-												className='filter__type-button'
+												className={classNames(
+													'filter__type-button',
+													!filters.category ? 'filter__type-button_active' : ''
+												)}
 												type='button'
-												value='Монобукеты'
-												onClick={handleChangeTypes}
+												onClick={() => handleChangeCategory('')}
 											>
-												Монобукеты
+												Все товары
 											</button>
 										</li>
-										<li className='filter__type-item'>
-											<button
-												className='filter__type-button'
-												type='button'
-												value='Авторские букеты'
-												onClick={handleChangeTypes}
-											>
-												Авторские букеты
-											</button>
-										</li>
-										<li className='filter__type-item'>
-											<button
-												className='filter__type-button'
-												type='button'
-												value='Цветы в коробке'
-												onClick={handleChangeTypes}
-											>
-												Цветы в коробке
-											</button>
-										</li>
-										<li className='filter__type-item'>
-											<button
-												className='filter__type-button'
-												type='button'
-												value='Цветы в корзине'
-												onClick={handleChangeTypes}
-											>
-												Цветы в корзине
-											</button>
-										</li>
-										<li className='filter__type-item'>
-											<button
-												className='filter__type-button'
-												type='button'
-												value='Букеты из сухоцветов'
-												onClick={handleChangeTypes}
-											>
-												Букеты из сухоцветов
-											</button>
-										</li>
+										{categories.map(category => (
+											<li className='filter__type-item'>
+												<button
+													className={classNames(
+														'filter__type-button',
+														category === filters.category
+															? 'filter__type-button_active'
+															: ''
+													)}
+													type='button'
+													onClick={() => handleChangeCategory(category)}
+												>
+													{category}
+												</button>
+											</li>
+										))}
 									</ul>
 								</Choices>
-							)}
+							) : null}
 						</fieldset>
 					)}
 				</form>

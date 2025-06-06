@@ -3,6 +3,7 @@ import { fetchProducts } from './products.action';
 
 const initialState = {
 	items: [],
+	categories: [],
 	isSearch: false,
 	isStatus: 'idle',
 	isError: null,
@@ -23,10 +24,20 @@ const productsSlice = createSlice({
 		builder
 			.addCase(fetchProducts.pending, state => {
 				state.isStatus = 'loading';
+				state.categories = [];
 			})
 			.addCase(fetchProducts.fulfilled, (state, action) => {
 				state.isStatus = 'succeeded';
 				state.items = action.payload;
+				action.payload.forEach(product => {
+					if (product.categories) {
+						product.categories.forEach(category => {
+							if (!state.categories.includes(category)) {
+								state.categories.push(category);
+							}
+						});
+					}
+				});
 			})
 			.addCase(fetchProducts.rejected, (state, action) => {
 				state.isStatus = 'failed';
