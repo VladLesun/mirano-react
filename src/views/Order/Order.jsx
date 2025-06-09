@@ -1,16 +1,31 @@
 import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { closeOrder } from '../../store/order/order.slice';
+import { sendOrder } from '../../store/order/order.action';
+import { closeOrder, updateOrderData } from '../../store/order/order.slice';
 import './order.scss';
 
 const Order = () => {
-	const isOrder = false;
-	const isOpenOrder = useSelector(state => state.order.isOpen);
+	const { isOpenOrder, orderId, data } = useSelector(state => state.order);
+	const itemsCart = useSelector(state => state.cart.items);
 	const dispatch = useDispatch();
 
 	const handleCloseOrder = useCallback(() => {
 		dispatch(closeOrder());
 	}, [dispatch]);
+
+	const handleChange = ({ target }) => {
+		const { name, value } = target;
+		dispatch(updateOrderData({ [name]: value }));
+	};
+
+	const handleSubmit = e => {
+		e.preventDefault();
+		dispatch(sendOrder());
+	};
+
+	const totalPrice = itemsCart.reduce((acc, item) => {
+		return item.quantity * item.price + acc;
+	}, 0);
 
 	useEffect(() => {
 		const handleEscape = e => {
@@ -29,31 +44,35 @@ const Order = () => {
 	return (
 		<div className='order' onClick={handleCloseOrder}>
 			<div className='order__wrapper' onClick={e => e.stopPropagation()}>
-				{isOrder ? (
+				{orderId ? (
 					<>
 						<h2 className='order__title'>Заказ оформлен!</h2>
-						<p className='order__id'>
-							Ваш номер заказа: 971f365a-caa1-4cdb-9446-bad2eff047e1
-						</p>
+						<p className='order__id'>Ваш номер заказа: {orderId}</p>
 					</>
 				) : (
 					<>
 						<h2 className='order__title'>Оформить заказ</h2>
-						<form className='order__form' id='order'>
+						<form className='order__form' id='order' onSubmit={handleSubmit}>
 							<fieldset className='order__fieldset'>
 								<legend className='order__legend'>Данные заказчика</legend>
 								<div className='order__input-group'>
 									<input
 										className='order__input'
 										type='text'
-										name='name-buyer'
+										name='buyerName'
 										placeholder='Имя'
+										value={data.buyerName}
+										onChange={handleChange}
+										required
 									/>
 									<input
 										className='order__input'
 										type='text'
-										name='phone-buyer'
+										name='buyerPhone'
 										placeholder='Телефон'
+										value={data.buyerPhone}
+										onChange={handleChange}
+										required
 									/>
 								</div>
 							</fieldset>
@@ -63,14 +82,20 @@ const Order = () => {
 									<input
 										className='order__input'
 										type='text'
-										name='name-recipient'
+										name='recipientName'
 										placeholder='Имя'
+										value={data.recipientName}
+										onChange={handleChange}
+										required
 									/>
 									<input
 										className='order__input'
 										type='text'
-										name='phone-recipient'
+										name='recipientPhone'
 										placeholder='Телефон'
+										value={data.recipientPhone}
+										onChange={handleChange}
+										required
 									/>
 								</div>
 							</fieldset>
@@ -82,18 +107,27 @@ const Order = () => {
 										type='text'
 										name='street'
 										placeholder='Улица'
+										value={data.street}
+										onChange={handleChange}
+										required
 									/>
 									<input
 										className='order__input order__input_min'
 										type='text'
 										name='house'
 										placeholder='Дом'
+										value={data.house}
+										onChange={handleChange}
+										required
 									/>
 									<input
 										className='order__input order__input_min'
 										type='text'
 										name='apartment'
 										placeholder='Квартира'
+										value={data.apartment}
+										onChange={handleChange}
+										required
 									/>
 								</div>
 							</fieldset>
@@ -103,21 +137,32 @@ const Order = () => {
 										<input
 											className='order__radio'
 											type='radio'
-											name='payment-online'
-											value='true'
+											name='paymentOnline'
+											value={data.paymentOnline === 'true'}
+											onChange={handleChange}
 											defaultChecked
 										/>
 										Оплата онлайн
 									</label>
 								</div>
 								<div className='order__delivery'>
-									<label htmlFor='delivery'>Доставка 01.07</label>
-									<input type='hidden' name='delivery-date' value='01.07' />
+									<label htmlFor='delivery'>Дата доставки</label>
+									<input
+										className='order__input'
+										type='date'
+										name='deliveryDate'
+										value={data.deliveryDate}
+										onChange={handleChange}
+										required
+									/>
 									<div className='order__select-wrapper'>
 										<select
 											className='order__select'
-											name='delivery-time'
+											name='deliveryTime'
 											id='delivery'
+											value={data.deliveryTime}
+											onChange={handleChange}
+											required
 										>
 											<option value='9-12'>с 9:00 до 12:00</option>
 											<option value='12-15'>с 12:00 до 15:00</option>
@@ -129,7 +174,7 @@ const Order = () => {
 							</fieldset>
 						</form>
 						<div className='order__footer'>
-							<p className='order__total'>92100&nbsp;₽</p>
+							<p className='order__total'>{totalPrice}&nbsp;₽</p>
 							<button className='order__button' type='submit' form='order'>
 								Заказать
 							</button>
