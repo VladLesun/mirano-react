@@ -1,26 +1,34 @@
 import { openCart } from '@store/cart/cart.slice';
-import { changeType } from '@store/filter/filters.slice';
-import { fetchProducts } from '@store/products/products.action';
-import { searchOpenProducts } from '@store/products/products.slice';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { hiddenChoices } from '../../store/filter/filters.slice';
+import { changeSearch } from '../../store/filter/filters.slice';
 import './header.scss';
 
-const Header = ({ setTitle }) => {
+const Header = () => {
 	const dispatch = useDispatch();
 	const cartItems = useSelector(state => state.cart.items);
 	const [searchValue, setSearchValue] = useState('');
 
+	const searchInputRef = useRef(null);
+
 	const handleOpenCart = () => dispatch(openCart());
+
 	const handleSubmit = e => {
 		e.preventDefault();
-		dispatch(fetchProducts({ search: searchValue }));
-		dispatch(changeType(''));
-		dispatch(searchOpenProducts());
-		dispatch(hiddenChoices());
-		setTitle(`Результат поиска: ${searchValue}`);
-		setSearchValue('');
+		if (searchValue.trim() !== '') {
+			searchInputRef.current.style.cssText = '';
+			dispatch(changeSearch(searchValue));
+			setSearchValue('');
+		} else {
+			searchInputRef.current.style.cssText = `
+				outline: 2px solid #f00;
+				outlineOffset: 5px;
+			`;
+
+			setTimeout(() => {
+				searchInputRef.current.style.cssText = '';
+			}, 2000);
+		}
 	};
 
 	return (
@@ -34,6 +42,7 @@ const Header = ({ setTitle }) => {
 						placeholder='Букет из роз'
 						value={searchValue}
 						onChange={e => setSearchValue(e.target.value)}
+						ref={searchInputRef}
 					/>
 
 					<button className='header__search-button' aria-label='начать поиск'>

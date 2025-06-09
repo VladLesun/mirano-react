@@ -1,14 +1,20 @@
 import { addToCart } from '@store/cart/cart.action';
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { openCart } from '../../store/cart/cart.slice';
 import './card.scss';
 
 export const Card = ({ id, img, title, dateDelivery, price }) => {
 	const dispatch = useDispatch();
+	const isOpenCart = useSelector(state => state.cart.isOpen);
 	const [buttonText, setButtonText] = useState(`${price}\u00A0₽`);
 
 	const handleAddToCart = () => {
-		dispatch(addToCart({ productId: id, quantity: 1 }));
+		dispatch(addToCart({ productId: id }));
+
+		if (!isOpenCart) {
+			dispatch(openCart());
+		}
 	};
 
 	const handleMouseEnter = () => setButtonText('в корзину');

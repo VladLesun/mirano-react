@@ -4,7 +4,6 @@ import { fetchProducts } from './products.action';
 const initialState = {
 	items: [],
 	categories: [],
-	isSearch: false,
 	isStatus: 'idle',
 	isError: null,
 };
@@ -12,14 +11,7 @@ const initialState = {
 const productsSlice = createSlice({
 	name: 'products',
 	initialState,
-	reducers: {
-		searchOpenProducts(state) {
-			state.isSearch = true;
-		},
-		searchCloseProducts(state) {
-			state.isSearch = false;
-		},
-	},
+	reducers: {},
 	extraReducers: builder => {
 		builder
 			.addCase(fetchProducts.pending, state => {

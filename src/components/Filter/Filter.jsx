@@ -20,8 +20,11 @@ export const Filter = ({ setTitle }) => {
 	const dispatch = useDispatch();
 	const filters = useSelector(state => state.filters);
 	const categories = useSelector(state => state.products.categories);
+	const products = useSelector(state => state.products.items);
+
 	const [openChoice, setOpenChoice] = useState(null);
 
+	const filterRef = useRef(null);
 	const prevFiltersRef = useRef(filters);
 
 	const debouncedFetchProducts = useRef(
@@ -31,16 +34,36 @@ export const Filter = ({ setTitle }) => {
 	).current;
 
 	useEffect(() => {
-		const prevFilters = prevFiltersRef.current;
+		filterRef.current.scrollIntoView({ behavior: 'smooth' });
+	}, [products]);
+
+	useEffect(() => {
+		const prevMinPrice = prevFiltersRef.current.minPrice;
+		const prevMaxPrice = prevFiltersRef.current.maxPrice;
+
 		const validFilter = getValidFilters(filters);
-		if (!validFilter.type) {
+
+		if (!validFilter.type && !validFilter.search) {
 			return;
 		}
-		setTitle(filterTypes.find(item => item.value === validFilter.type).title);
-		if (prevFilters.type !== validFilter.type) {
-			dispatch(fetchProducts(validFilter));
-		} else {
+
+		const type = filterTypes.find(item => item.value === validFilter.type);
+
+		if (type) {
+			setTitle(type.title);
+		}
+
+		if (validFilter.search) {
+			setTitle(`Результат поиска: ${validFilter.search}`);
+		}
+
+		if (
+			prevMinPrice !== validFilter.minPrice ||
+			prevMaxPrice !== validFilter.maxPrice
+		) {
 			debouncedFetchProducts(validFilter);
+		} else {
+			dispatch(fetchProducts(validFilter));
 		}
 
 		prevFiltersRef.current = filters;
@@ -66,7 +89,7 @@ export const Filter = ({ setTitle }) => {
 	};
 
 	return (
-		<section className='filter'>
+		<section className='filter' ref={filterRef}>
 			<h2 className='visually-hidden'></h2>
 			<div className='container'>
 				<form className='filter__form'>
@@ -83,73 +106,71 @@ export const Filter = ({ setTitle }) => {
 						})}
 					</fieldset>
 
-					{filters.type && (
-						<fieldset className='filter__group filter__group_choices'>
-							<Choices
-								buttonLabel='Цена'
-								isOpen={openChoice === 'price'}
-								onToggle={() => handleToggleChoice('price')}
-							>
-								<fieldset className='filter__price'>
-									<input
-										className='filter__input-price'
-										type='text'
-										name='minPrice'
-										placeholder='от'
-										value={filters.minPrice}
-										onChange={handleChangePrice}
-									/>
-									<input
-										className='filter__input-price'
-										type='text'
-										name='maxPrice'
-										placeholder='до'
-										value={filters.maxPrice}
-										onChange={handleChangePrice}
-									/>
-								</fieldset>
-							</Choices>
+					<fieldset className='filter__group filter__group_choices'>
+						<Choices
+							buttonLabel='Цена'
+							isOpen={openChoice === 'price'}
+							onToggle={() => handleToggleChoice('price')}
+						>
+							<fieldset className='filter__price'>
+								<input
+									className='filter__input-price'
+									type='text'
+									name='minPrice'
+									placeholder='от'
+									value={filters.minPrice}
+									onChange={handleChangePrice}
+								/>
+								<input
+									className='filter__input-price'
+									type='text'
+									name='maxPrice'
+									placeholder='до'
+									value={filters.maxPrice}
+									onChange={handleChangePrice}
+								/>
+							</fieldset>
+						</Choices>
 
-							{categories.length ? (
-								<Choices
-									buttonLabel='Тип товара'
-									isOpen={openChoice === 'type'}
-									onToggle={() => handleToggleChoice('type')}
-								>
-									<ul className='filter__type-list'>
-										<li className='filter__type-item'>
+						{categories.length ? (
+							<Choices
+								buttonLabel='Тип товара'
+								isOpen={openChoice === 'type'}
+								onToggle={() => handleToggleChoice('type')}
+							>
+								<ul className='filter__type-list'>
+									<li className='filter__type-item'>
+										<button
+											className={classNames(
+												'filter__type-button',
+												!filters.category ? 'filter__type-button_active' : ''
+											)}
+											type='button'
+											onClick={() => handleChangeCategory('')}
+										>
+											Все товары
+										</button>
+									</li>
+									{categories.map(category => (
+										<li key={category} className='filter__type-item'>
 											<button
 												className={classNames(
 													'filter__type-button',
-													!filters.category ? 'filter__type-button_active' : ''
+													category === filters.category
+														? 'filter__type-button_active'
+														: ''
 												)}
 												type='button'
-												onClick={() => handleChangeCategory('')}
+												onClick={() => handleChangeCategory(category)}
 											>
-												Все товары
+												{category}
 											</button>
 										</li>
-										{categories.map(category => (
-											<li className='filter__type-item'>
-												<button
-													className={classNames(
-														'filter__type-button',
-														category === filters.category
-															? 'filter__type-button_active'
-															: ''
-													)}
-													type='button'
-													onClick={() => handleChangeCategory(category)}
-												>
-													{category}
-												</button>
-											</li>
-										))}
-									</ul>
-								</Choices>
-							) : null}
-						</fieldset>
-					)}
+									))}
+								</ul>
+							</Choices>
+						) : null}
+					</fieldset>
 				</form>
 			</div>
 		</section>

@@ -1,26 +1,13 @@
 import { API_URL } from '@store/API/api';
-import { searchCloseProducts } from '@store/products/products.slice';
-import { useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Card } from '../Card/Card';
 import { Cart } from '../Cart/Cart';
 import './goods.scss';
 
 export const Goods = ({ title }) => {
-	const {
-		items: products,
-		isStatus: productsStatus,
-		isSearch: productsSearch,
-	} = useSelector(state => state.products);
-	const dispatch = useDispatch();
-	const productsRef = useRef();
-
-	useEffect(() => {
-		if (productsSearch) {
-			productsRef.current.scrollIntoView({ behavior: 'smooth' });
-		}
-		dispatch(searchCloseProducts());
-	}, [productsSearch, dispatch]);
+	const { items: products, isStatus: productsStatus } = useSelector(
+		state => state.products
+	);
 
 	let content = null;
 
@@ -55,7 +42,7 @@ export const Goods = ({ title }) => {
 	}
 
 	return (
-		<section className='goods' ref={productsRef}>
+		<section className='goods'>
 			<div className='container goods__container'>
 				<div className='goods__box'>
 					<h2 className='goods__title'>{title}</h2>

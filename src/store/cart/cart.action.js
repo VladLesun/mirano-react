@@ -40,8 +40,16 @@ export const fetchCart = createAsyncThunk('cart/fetchCart', async () => {
 
 export const addToCart = createAsyncThunk(
 	'cart/addToCart',
-	async ({ productId, quantity }) => {
+	async ({ productId, quantity }, { getState, rejectWithValue }) => {
 		try {
+			const state = getState();
+			const cartItems = state.cart.items;
+
+			if (isNaN(parseInt(quantity))) {
+				const cartItem = cartItems.find(item => item.id === productId);
+				quantity = cartItem ? cartItem.quantity + 1 : 1;
+			}
+
 			const res = await fetch(`${API_URL}${API_ENDPOINTS_CART}/items`, {
 				method: 'POST',
 				credentials: 'include',
@@ -57,7 +65,7 @@ export const addToCart = createAsyncThunk(
 
 			return await res.json();
 		} catch (error) {
-			console.error(error);
+			return rejectWithValue(error);
 		}
 	}
 );

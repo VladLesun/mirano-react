@@ -19,7 +19,7 @@ function App() {
 
 	return (
 		<>
-			<Header setTitle={setTitleProducts} />
+			<Header />
 			<Main title={titleProducts} setTitle={setTitleProducts} />
 			<Footer />
 			<Order />
