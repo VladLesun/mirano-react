@@ -2,14 +2,15 @@ import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { closeCart } from '../../store/cart/cart.slice';
 import { openOrder } from '../../store/order/order.slice';
+import { Preload } from '../../views/Preload/Preload';
 import { CartItem } from '../CartItem/CartItem';
 import './cart.scss';
 
 export const Cart = () => {
 	const dispatch = useDispatch();
-	const { isOpen, items } = useSelector(state => state.cart);
+	const { isOpen, items, isStatus } = useSelector(state => state.cart);
 
-	const cartRef = useRef();
+	const cartRef = useRef(null);
 
 	const handleCloseCart = () => dispatch(closeCart());
 	const handleOpenOrder = () => dispatch(openOrder());
@@ -23,6 +24,22 @@ export const Cart = () => {
 			cartRef.current.scrollIntoView({ behavior: 'smooth' });
 		}
 	}, [isOpen]);
+
+	let content = null;
+
+	if (isStatus === 'loading') {
+		content = <Preload />;
+	}
+
+	if (isStatus === 'succeeded') {
+		content = (
+			<ul className='cart__list'>
+				{items.map(item => (
+					<CartItem key={item.id} {...item} />
+				))}
+			</ul>
+		);
+	}
 
 	if (isOpen) {
 		return (
@@ -59,13 +76,14 @@ export const Cart = () => {
 						</button>
 					</div>
 
-					<p className='cart__date-delivery'>сегодня в 14:00</p>
+					<p
+						className='cart__date-delivery'
+						style={{ marginBottom: isStatus === 'loading' ? 'auto' : '16px' }}
+					>
+						сегодня в 14:00
+					</p>
 
-					<ul className='cart__list'>
-						{items.map(item => (
-							<CartItem key={item.id} {...item} />
-						))}
-					</ul>
+					{content}
 
 					<div className='cart__footer'>
 						<button

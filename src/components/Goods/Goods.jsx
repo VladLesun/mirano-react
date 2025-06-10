@@ -1,5 +1,6 @@
 import { API_URL } from '@store/API/api';
 import { useSelector } from 'react-redux';
+import { Preload } from '../../views/Preload/Preload';
 import { Card } from '../Card/Card';
 import { Cart } from '../Cart/Cart';
 import './goods.scss';
@@ -12,7 +13,7 @@ export const Goods = ({ title }) => {
 	let content = null;
 
 	if (productsStatus === 'loading') {
-		content = <p>Loading...</p>;
+		content = <Preload />;
 	}
 
 	if (productsStatus === 'succeeded' && products.length) {
@@ -42,7 +43,10 @@ export const Goods = ({ title }) => {
 	}
 
 	return (
-		<section className='goods'>
+		<section
+			className='goods'
+			style={{ position: productsStatus === 'loading' ? 'relative' : '' }}
+		>
 			<div className='container goods__container'>
 				<div className='goods__box'>
 					<h2 className='goods__title'>{title}</h2>
