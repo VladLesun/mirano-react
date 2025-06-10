@@ -4,7 +4,6 @@ import { useDispatch } from 'react-redux';
 import { addToCart } from '../../store/cart/cart.action';
 import { debounce } from '../../utils/debounce';
 import { isNumber } from '../../utils/isNumber';
-// import { isNumber } from '../../utils/isNumber';
 
 export const CartItem = ({ photoUrl, name, price, id, quantity }) => {
 	const [inputQuantity, setInputQuantity] = useState(quantity);

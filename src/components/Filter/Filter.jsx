@@ -20,7 +20,6 @@ export const Filter = ({ setTitle }) => {
 	const dispatch = useDispatch();
 	const filters = useSelector(state => state.filters);
 	const categories = useSelector(state => state.products.categories);
-	const products = useSelector(state => state.products.items);
 
 	const [openChoice, setOpenChoice] = useState(null);
 
@@ -34,8 +33,20 @@ export const Filter = ({ setTitle }) => {
 	).current;
 
 	useEffect(() => {
-		filterRef.current.scrollIntoView({ behavior: 'smooth' });
-	}, [products]);
+		document.addEventListener('click', e => {
+			const target = e.target.closest('.filter__group_choices');
+
+			if (!target && openChoice !== null) {
+				setOpenChoice(null);
+			}
+		});
+	}, [openChoice]);
+
+	useEffect(() => {
+		if (filters !== prevFiltersRef.current) {
+			filterRef.current.scrollIntoView({ behavior: 'smooth' });
+		}
+	}, [filters]);
 
 	useEffect(() => {
 		const prevMinPrice = prevFiltersRef.current.minPrice;
@@ -47,23 +58,23 @@ export const Filter = ({ setTitle }) => {
 			return;
 		}
 
-		const type = filterTypes.find(item => item.value === validFilter.type);
-
-		if (type) {
-			setTitle(type.title);
-		}
-
-		if (validFilter.search) {
-			setTitle(`Результат поиска: ${validFilter.search}`);
-		}
-
 		if (
-			prevMinPrice !== validFilter.minPrice ||
-			prevMaxPrice !== validFilter.maxPrice
+			prevMinPrice !== filters.minPrice ||
+			prevMaxPrice !== filters.maxPrice
 		) {
 			debouncedFetchProducts(validFilter);
 		} else {
 			dispatch(fetchProducts(validFilter));
+
+			const type = filterTypes.find(item => item.value === validFilter.type);
+
+			if (type) {
+				setTitle(type.title);
+			}
+
+			if (validFilter.search) {
+				setTitle(`Результат поиска: ${validFilter.search}`);
+			}
 		}
 
 		prevFiltersRef.current = filters;
@@ -75,7 +86,7 @@ export const Filter = ({ setTitle }) => {
 	const handleChangeFilter = ({ target }) => {
 		const { value } = target;
 		dispatch(changeType(value));
-		setOpenChoice(-1);
+		setOpenChoice(null);
 	};
 
 	const handleChangePrice = ({ target }) => {
@@ -85,7 +96,7 @@ export const Filter = ({ setTitle }) => {
 
 	const handleChangeCategory = category => {
 		dispatch(changeCategory(category));
-		setOpenChoice(-1);
+		setOpenChoice(null);
 	};
 
 	return (

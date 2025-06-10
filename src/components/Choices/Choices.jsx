@@ -33,7 +33,11 @@ export const Choices = ({
 
 	return (
 		<div className={classNames('choices', className)}>
-			<button className='choices__btn' type='button' onClick={onToggle}>
+			<button
+				className={!isOpen ? 'choices__btn' : 'choices__btn choices__btn_open'}
+				type='button'
+				onClick={onToggle}
+			>
 				{buttonLabel}
 			</button>
 
