@@ -11,15 +11,15 @@ export const CartItem = ({ photoUrl, name, price, id, quantity }) => {
 	const dispatch = useDispatch();
 
 	const debounceInputChange = debounce(newQuantity => {
-		dispatch(addToCart({ productId: id, quantity: newQuantity }));
+		if (isNumber(newQuantity)) {
+			dispatch(addToCart({ productId: id, quantity: newQuantity }));
+		}
 	}, 500);
 
 	const handleInputChange = e => {
 		const newQuantity = parseInt(e.target.value);
-		if (isNumber(newQuantity)) {
-			setInputQuantity(newQuantity);
-			debounceInputChange(newQuantity);
-		}
+		setInputQuantity(newQuantity);
+		debounceInputChange(newQuantity);
 	};
 
 	const handleIncrement = () => {
@@ -54,7 +54,9 @@ export const CartItem = ({ photoUrl, name, price, id, quantity }) => {
 					+
 				</button>
 			</div>
-			<p className='cart__price'>{price * inputQuantity}&nbsp;₽</p>
+			<p className='cart__price'>
+				{inputQuantity ? price * inputQuantity : 0}&nbsp;₽
+			</p>
 		</li>
 	);
 };
