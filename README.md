@@ -1,12 +1,28 @@
-# React + Vite
+# 🛍️ React-приложение для интернет-магазина
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Проект представляет собой современное одностраничное приложение, построенное на **React** с использованием **Vite** для быстрой сборки и высокой производительности.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ⚙️ Технологии и архитектура
 
-## Expanding the ESLint configuration
+- ⚡ **Vite** — мгновенная сборка и настройка проекта
+- 🎨 **HTML + CSS** — готовая вёрстка для фокусировки на логике
+- ⚛️ **React** — создание интерактивных компонентов
+- 🧠 **Redux Toolkit** — централизованное управление состоянием
+- 🧭 **React Router** — маршрутизация между разделами
+- 🌐 **API-интеграция** — загрузка данных с сервера
+- 📤 **Отправка данных** — оформление заказов и взаимодействие с сервером
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## 🧩 Структура приложения
+
+- 📂 **Меню** — навигация по разделам
+- 🗂️ **Категории товаров** — фильтрация и группировка
+- 🛒 **Карточки товаров** — визуальное представление информации
+- 🧺 **Корзина** — добавление, удаление и оформление заказов
+
+---
+
+> Проект ориентирован на удобство пользователя, чистую архитектуру и масштабируемость.
